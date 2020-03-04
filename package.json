@@ -1,0 +1,20 @@
+{
+  "name": "dj-truck-yt-api",
+  "version": "2.0.0",
+  "description": "api for dj-truck aplication",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "robert.kami88@gmial.com",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-cors": "0.0.3",
+    "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.2",
+    "ytdl-core": "^2.0.0"
+  }
+}
