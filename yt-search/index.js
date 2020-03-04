@@ -94,7 +94,8 @@ function parseSnipped(snipped){
             etag : item.etag,
             title : item.snippet.title,
             description: item.snippet.description,
-            thumbnails : item.snippet.thumbnails
+            thumbnails : item.snippet.thumbnails,
+            source: "YouTube"
         }))
     }
     return results;
