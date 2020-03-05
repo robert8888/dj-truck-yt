@@ -52,11 +52,12 @@ app.get('/reset', (req, res)=>{
 
 app.get('/download', (req, res) => {
     let URL = req.query.url;
+    let ID = req.query.id;
     const format = 'mp3'; 
     let filename = "testName." + format;
     res.header('Content-Dispositon', 'attachment' , filename = filename);
 
-    let videoID = ytdl.getURLVideoID(URL);
+    let videoID = ID || ytdl.getURLVideoID(URL);
     ytdl(URL, {
          quality: 'highestaudio', filter: 'audioonly' 
     }).pipe(res)
