@@ -39,7 +39,7 @@ app.use(cors());
 //app.set('json spaces', 2);
 
 app.listen(process.env.PORT || 80, ()=>{
-    console.log('Helow serwer started on port 80');
+    console.log('Helow serwer started on port 80 ...');
 })
 
 app.get('/', (req, res)=>{
