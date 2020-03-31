@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 
 const ApiKeys = [
+    'AIzaSyCRUDY5A0rFdMzeQzvL6F3APSxAWJQPkTM', // djtruck-1
     'AIzaSyANKS3cfFFgxiZP8IHYbpIgCFtCEeA6Rv8', // djtruck-3
     'AIzaSyCRUDY5A0rFdMzeQzvL6F3APSxAWJQPkTM',
     'AIzaSyDEBtvg09qL_L1ONMZPhh7ldmxaNrrluqc',

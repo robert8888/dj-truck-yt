@@ -6,7 +6,7 @@ const cors = require('cors');
 const ytdl = require('ytdl-core');
 const app = express();
 
-const mainPageTemplate = require("./mainPageTpl");
+const mainPageTemplate = require("./mainPageTpl.js");
 
 app.use(cors());
 
@@ -21,9 +21,7 @@ app.get('/', (req, res)=>{
     res.send(mainPageTemplate);
 })
 
-app.get('/reset', (req, res)=>{
-    currentApi = 0;
-})
+
 
 app.get('/download', (req, res) => {
     let URL = req.query.url;
