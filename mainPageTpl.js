@@ -1,4 +1,4 @@
-const mainPageTemplate = `
+module.exports.mainPageTemplate = `
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -25,4 +25,3 @@ const mainPageTemplate = `
 </body>
 </html>`;
 
-module.exports.mainPageTemplate;

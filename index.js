@@ -6,7 +6,7 @@ const cors = require('cors');
 const ytdl = require('ytdl-core');
 const app = express();
 
-const mainPageTemplate = require("./mainPageTpl.js");
+const {mainPageTemplate} = require("./mainPageTpl");
 
 app.use(cors());
 
@@ -18,6 +18,7 @@ app.listen(process.env.PORT || 80, ()=>{
 })
 
 app.get('/', (req, res)=>{
+
     res.send(mainPageTemplate);
 })
 
