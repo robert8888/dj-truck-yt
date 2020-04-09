@@ -91,7 +91,7 @@ function parseSnipped(snipped){
     let results = [];
     for(let item of snipped.items){
         (item.id.videoId && results.push({
-            id : item.id.videoId,
+            sourceId : item.id.videoId,
             etag : item.etag,
             title : item.snippet.title,
             description: item.snippet.description,
