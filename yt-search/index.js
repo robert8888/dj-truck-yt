@@ -64,7 +64,7 @@ async function get(queryString, maxResults = null){
 
     let results = parseSnipped (snipped);
 
-    const ids = results.map( item => item.id);
+    const ids = results.map( item => item.sourceId);
     const detailsUrl = link("videos?id=", ids.join(","), part[1]);
     
     const details = await call(detailsUrl);
@@ -105,16 +105,16 @@ function parseSnipped(snipped){
 function merge(results, details){
     if(!results || !details) return results;
 
-    for(item of details){
-        let duration = item.contentDetails.duration;
-        let quality = item.contentDetails.definition;
-        let id = item.id;
-        results = results.map( item => {
-            if(item.id === id){
-                item.duration = duration;
-                item.quality = quality;
+    for(rItem of details){
+        let duration = rItem.contentDetails.duration;
+        let quality = rItem.contentDetails.definition;
+        let id = rItem.id;
+        results = results.map( dItem => {
+            if(dItem.sourceId === id){
+                dItem.duration = duration;
+                dItem.quality = quality;
             }
-            return item;
+            return dItem;
         })
     }
     return results;
