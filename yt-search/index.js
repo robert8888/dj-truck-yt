@@ -20,97 +20,93 @@ const ApiKeys = [
 
 let currentApi = 0;
 
-const link = (comand, param,  _part , options = "") => {
-    console.log('api key nr: ', currentApi);
-    const preLink ='https://www.googleapis.com/youtube/v3/'
+const link = (comand, param, _part, options = "") => {
+   // console.log('api key nr: ', currentApi);
+    const preLink = 'https://www.googleapis.com/youtube/v3/'
     const key = "&key=" + ApiKeys[currentApi];
     const part = "&part=" + _part;
 
-    let url = preLink + comand  + param + part + options +  key ;
+    let url = preLink + comand + param + part + options + key;
     return encodeURI(url);
 }
 
-const snippedOptions = (maxResults) =>{
+const snippedOptions = (maxResults) => {
     const options = [];
-    if(maxResults){
+    if (maxResults) {
         options.push("&maxResults=" + maxResults);
     }
     options.push("&type=video")
     return options.join('');
 }
 
-async function get(queryString, maxResults = null){
+async function get(queryString, maxResults = null) {
     const part = ['snippet', 'contentDetails'];
-    const snippedUrl = link("search?q=", queryString, part[0],  snippedOptions(maxResults));
- 
+    const snippedUrl = link("search?q=", queryString, part[0], snippedOptions(maxResults));
+
     //if current api key limit is exceeded then take next api key
     let snipped;
-    try  {
+    try {
         snipped = await call(snippedUrl);
-        if(snipped.error) throw new Error();
+        if (snipped.error) throw new Error();
     } catch {
-            if( currentApi++ < ApiKeys.length ){
-                return get(...arguments);
-            }
-            console.log('tu')
-            snipped = snipped || {error : "limit exceeded no more api keys, try to reset api key by /reset"};
-            snipped.curentApiKey = currentApi;
-            snipped.allApiKeysNumber = ApiKeys.length ;
-            return [ snipped ];
+        if (currentApi++ < ApiKeys.length) {
+            return get(...arguments);
+        }
+        snipped = snipped || { error: "limit exceeded no more api keys, try to reset api key by /reset" };
+        snipped.curentApiKey = currentApi;
+        snipped.allApiKeysNumber = ApiKeys.length;
+        return [snipped];
     }
 
+    let results = parseSnipped(snipped);
 
-   
-
-    let results = parseSnipped (snipped);
-
-    const ids = results.map( item => item.sourceId);
+    const ids = results.map(item => item.sourceId);
     const detailsUrl = link("videos?id=", ids.join(","), part[1]);
-    
+
     const details = await call(detailsUrl);
 
-    if(!details.error){
+    if (!details.error) {
         results = merge(results, details.items);
     }
-    
+
     return results;
 }
 
-async function call(url){
+async function call(url) {
     try {
         let response = await fetch(url);
         return await response.json();
-    } catch(error){
-        return {error : error.message};
+    } catch (error) {
+        return { error: error.message };
     }
 
 
 }
 
-function parseSnipped(snipped){
+function parseSnipped(snipped) {
     let results = [];
-    for(let item of snipped.items){
+    for (let item of snipped.items) {
         (item.id.videoId && results.push({
-            sourceId : item.id.videoId,
-            etag : item.etag,
-            title : item.snippet.title,
+            sourceId: item.id.videoId,
+            etag: item.etag,
+            title: item.snippet.title,
             description: item.snippet.description,
-            thumbnails : item.snippet.thumbnails,
+            thumbnails: item.snippet.thumbnails,
             source: "YouTube"
         }))
     }
     return results;
 }
 
-function merge(results, details){
-    if(!results || !details) return results;
+function merge(results, details) {
+    if (!results || !details) return results;
 
-    for(rItem of details){
+    for (rItem of details) {
         let duration = rItem.contentDetails.duration;
         let quality = rItem.contentDetails.definition;
         let id = rItem.id;
-        results = results.map( dItem => {
-            if(dItem.sourceId === id){
+        results = results.map(dItem => {
+            if (dItem.sourceId === id) {
                 dItem.duration = duration;
                 dItem.quality = quality;
             }
@@ -120,7 +116,7 @@ function merge(results, details){
     return results;
 }
 
-     
+
 module.exports = {
-    get : get,
+    get: get,
 };
