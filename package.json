@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "start-dev" : "nodemon index.js"
+    "start-dev": "nodemon index.js"
   },
   "author": "robert.kami88@gmial.com",
   "license": "ISC",
@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "express-cors": "0.0.3",
     "node-fetch": "^2.6.0",
-    "nodemon": "^2.0.2",
-    "ytdl-core": "^2.0.0"
+    "nodemon": "^2.0.4",
+    "ytdl-core": "^2.1.5"
   }
 }
