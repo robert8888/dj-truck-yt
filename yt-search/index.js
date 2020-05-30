@@ -92,7 +92,8 @@ function parseSnipped(snipped) {
             title: item.snippet.title,
             description: item.snippet.description,
             thumbnails: item.snippet.thumbnails,
-            source: "YouTube"
+            source: "YouTube",
+            sourceUrl: "https://www.youtube.com/watch?v=" + item.id.videoId
         }))
     }
     return results;
