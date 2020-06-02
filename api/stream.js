@@ -27,19 +27,27 @@ const streamContentProvider = async req => {
         return ytdl(url, { quality: format.itag, range })
     }
 
-    const res = {
+    return {
         fileName: normalizeString(details.title),
         totalSize: format.contentLength,
         mimeType: format.mimeType,
         getStream
     };
-    console.log(res)
-    return res;
+
 }
 
-const handler = createPartialContentHandler(streamContentProvider, {
-    debug: msg => console.log(msg),
-})
+let handler = (req, res) => {
+    res.status(500).send("Can't share file stream")
+}
+
+try{
+    handler = createPartialContentHandler(streamContentProvider, {
+        debug: msg => console.log(msg),
+    })
+    
+} catch(error){
+    console.log(errro)
+}
 
 router.get("/stream", handler)
 
