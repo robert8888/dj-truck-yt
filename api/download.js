@@ -11,9 +11,9 @@ router.get("/download", async (req, res) => {
 
     const url = _url || `https://www.youtube.com/watch?v=${_id}`;
     const id = _id || getId(url);
-
     const details = await ytdl.getBasicInfo(url);
     const format = await getFormat(id);
+
     const mimeType = format.mimeType.split(";")[0];
     const fileExtensions = mfe.getFileExtensions(mimeType, true);
 

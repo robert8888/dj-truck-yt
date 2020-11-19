@@ -20,6 +20,6 @@
     "mime-file-extension": "^1.0.1",
     "node-fetch": "^2.6.0",
     "nodemon": "^2.0.4",
-    "ytdl-core": "^2.1.5"
+    "ytdl-core": "^4.0.5"
   }
 }
