@@ -1,21 +1,9 @@
+require("dotenv").config()
+
 const fetch = require('node-fetch');
 
 const ApiKeys = [
-    'AIzaSyCRUDY5A0rFdMzeQzvL6F3APSxAWJQPkTM', // djtruck-1
-    'AIzaSyANKS3cfFFgxiZP8IHYbpIgCFtCEeA6Rv8', // djtruck-3
-    'AIzaSyCRUDY5A0rFdMzeQzvL6F3APSxAWJQPkTM',
-    'AIzaSyDEBtvg09qL_L1ONMZPhh7ldmxaNrrluqc',
-    'AIzaSyCRUDY5A0rFdMzeQzvL6F3APSxAWJQPkTM', // djtruck-0
-    'AIzaSyCRUDY5A0rFdMzeQzvL6F3APSxAWJQPkTM', // djtruck-1
-    'AIzaSyC_PilTZXdEInudbPazpI9X7SqHq01eULc', // djtruck-2
-
-
-
-    'AIzaSyAkBcTUMAXeTa6LloEgqiRWfg9x66u7GhU',
-    'AIzaSyB0-G7yzkW8qOlwWxZEL41mqw2Q25WLswg',
-    'AIzaSyDwRqL0obqrZaEGH-5OLWdzooxKAchhmZ4',
-    'AIzaSyCRUDY5A0rFdMzeQzvL6F3APSxAWJQPkTM',
-
+    process.env.YT_API_KEY
 ];
 
 let currentApi = 0;
