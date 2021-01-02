@@ -2,16 +2,9 @@ require("dotenv").config()
 
 const fetch = require('node-fetch');
 
-const ApiKeys = [
-    process.env.YT_API_KEY
-];
-
-let currentApi = 0;
-
 const link = (comand, param, _part, options = "") => {
-   // console.log('api key nr: ', currentApi);
     const preLink = 'https://www.googleapis.com/youtube/v3/'
-    const key = "&key=" + ApiKeys[currentApi];
+    const key = "&key=" + process.env.YT_API_KEY;
     const part = "&part=" + _part;
 
     let url = preLink + comand + param + part + options + key;
@@ -37,13 +30,7 @@ async function get(queryString, maxResults = null) {
         snipped = await call(snippedUrl);
         if (snipped.error) throw new Error();
     } catch {
-        if (currentApi++ < ApiKeys.length) {
-            return get(...arguments);
-        }
-        snipped = snipped || { error: "limit exceeded no more api keys, try to reset api key by /reset" };
-        snipped.curentApiKey = currentApi;
-        snipped.allApiKeysNumber = ApiKeys.length;
-        return [snipped];
+        return get(...arguments);
     }
 
     let results = parseSnipped(snipped);
