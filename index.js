@@ -1,3 +1,4 @@
+require("dotenv").config()
 
 const express = require('express');
 const cors = require('cors');
@@ -25,7 +26,7 @@ app.get('/', (req, res)=>{
     res.send(homePageTemplate);
 })
 
-
-app.listen(process.env.PORT || 80, ()=>{
-    console.log('Hello server started on port 80 ...');
+const PORT =  process.env.PORT || 80;
+app.listen(PORT, ()=>{
+    console.log(`Hello server started on port ${PORT} ...`);
 })
