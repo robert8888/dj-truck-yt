@@ -1,17 +1,31 @@
 const ytdl = require('@distube/ytdl-core');
+const path = require("path");
+const os = require("os");
+const fs = require("fs");
 
+const getCookiesFilePath = (type = "txt") => {
+    return path.join(__dirname, `/../cookies/www.youtube.com_cookies.${type}`);
+}
 
-// const getFormat = id => new Promise((res, rej) => {
-//     ytdl.getInfo( id , (err, info) => {
-//         if (err) throw err;
-//         let format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio', filter: 'audioonly'});
-//         res(format)
-//       });
-// })
+const getCookiesJson = () => {
+    return fs.readFileSync(getCookiesFilePath("json"));
+}
 
 const getFormat = async id => {
-    const info = await ytdl.getInfo(id);
-    const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio', filter: 'audioonly'})
+    const cookies = JSON.parse(getCookiesJson());
+
+    const info = await ytdl.getInfo(id, {
+        cookies,
+        requestOptions: {
+            headers: {
+                'User-Agent': 'Mozilla/5.0',
+            }
+        }
+    });
+    const format = ytdl.chooseFormat(info.formats, {
+        quality: 'highestaudio',
+        filter: 'audioonly'
+    })
     return format
 }
 
@@ -24,6 +38,8 @@ const getId = url => {
 
 
 module.exports = {
+    getCookiesJson,
+    getCookiesFilePath,
     getFormat,
     getId,
 }

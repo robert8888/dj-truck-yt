@@ -84,26 +84,13 @@ const express = require("express");
 const router = express.Router();
 const { spawn } = require("child_process");
 const contentDisposition = require("content-disposition");
-const { getFormat, getId } = require("./../utils");
+const { getFormat, getId, getCookiesFilePath } = require("./../utils");
 const mfe = require("mime-file-extension");
 const path = require("path");
 const fs = require("fs");
-const os = require("os");
 
 const ytDlpPath = path.resolve(__dirname, "../bin/yt-dlp");
 
-const getCookies = () => {
-    let cookiesFile = null;
-    if (process.env.YT_COOKIES) {
-        try {
-            cookiesFile = path.join(os.tmpdir(), `youtube.com.cookies.txt`);
-            fs.writeFileSync(cookiesFile, process.env.YT_COOKIES, { encoding: "utf8" });
-        } catch (e) {
-            console.warn("Failed to write cookies from ENV:", e);
-        }
-    }
-    return cookiesFile;
-}
 
 router.get("/download", async (req, res) => {
     const _url = req.query.url;
@@ -112,10 +99,11 @@ router.get("/download", async (req, res) => {
     const url = _url || `https://www.youtube.com/watch?v=${_id}`;
     const id = _id || getId(url);
 
-    const cookiesFile = getCookies();
-
+    const cookiesFile = getCookiesFilePath();
+    console.log("the cookies", cookiesFile)
     try {
         const format = await getFormat(id);
+        console.log("Get format", format)
         const mimeType = format.mimeType.split(";")[0];
         const totalSize = parseInt(format.contentLength, 10);
 
