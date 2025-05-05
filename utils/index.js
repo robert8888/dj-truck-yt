@@ -1,4 +1,4 @@
-const ytdl = require('ytdl-core');
+const ytdl = require('@distube/ytdl-core');
 
 
 // const getFormat = id => new Promise((res, rej) => {
@@ -16,6 +16,7 @@ const getFormat = async id => {
 }
 
 const getId = url => {
+    console.log("the get id url", url)
     const match = url.match(/watch\?v=(?<id>[^&]+)/) 
     if(!match) return null;
     return match.groups.id;

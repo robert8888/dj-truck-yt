@@ -13,6 +13,12 @@ const homePageTemplate = require("./pages/homePageTpl");
 
 app.use(cors());
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
 
 if(process.env.NODE_ENV === "development"){
     app.set('json spaces', 2);

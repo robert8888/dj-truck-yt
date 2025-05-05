@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "start:dev": "nodemon index.js"
+    "start:dev": "nodemon index.js",
+    "postinstall": "chmod +x ./bin/yt-dlp"
   },
   "author": "robert.kami88@gmial.com",
   "license": "ISC",
   "dependencies": {
+    "@distube/ytdl-core": "^4.16.9",
     "content-disposition": "^0.5.3",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -18,7 +20,6 @@
     "express-partial-content": "^1.0.2",
     "mime-file-extension": "^1.0.1",
     "node-fetch": "^2.6.1",
-    "nodemon": "^2.0.4",
-    "ytdl-core": "npm:@distube/ytdl-core@^4.16.9"
+    "nodemon": "^2.0.4"
   }
 }
