@@ -84,81 +84,78 @@ const express = require("express");
 const router = express.Router();
 const { spawn } = require("child_process");
 const contentDisposition = require("content-disposition");
-const { getFormat, getId, getCookiesFilePath } = require("./../utils");
 const mfe = require("mime-file-extension");
 const path = require("path");
-const fs = require("fs");
+const { getCookiesFilePath } = require("./../utils");
+
 
 const ytDlpPath = path.resolve(__dirname, "../bin/yt-dlp");
-
+const cookiesFilePath = getCookiesFilePath()
 
 router.get("/download", async (req, res) => {
-    const _url = req.query.url;
-    const _id = req.query.id;
+    const url = req.query.url;
 
-    const url = _url || `https://www.youtube.com/watch?v=${_id}`;
-    const id = _id || getId(url);
+    if (!url) return res.status(400).send("Missing URL");
 
-    const cookiesFile = getCookiesFilePath();
-    console.log("the cookies", cookiesFile)
     try {
-        const format = await getFormat(id);
-        console.log("Get format", format)
-        const mimeType = format.mimeType.split(";")[0];
-        const totalSize = parseInt(format.contentLength, 10);
+        const meta = spawn(ytDlpPath, [
+            "--dump-json",
+            "--cookies", cookiesFilePath,
+            url,
+        ]);
 
-        const metaArgs = ["--dump-json", url];
-        if (cookiesFile) metaArgs.unshift("--cookies", cookiesFile);
-
-        const meta = spawn(ytDlpPath, metaArgs);
         let json = "";
 
         meta.stdout.on("data", chunk => json += chunk.toString());
         meta.stderr.on("data", data => console.error("yt-dlp metadata stderr:", data.toString()));
 
         meta.on("close", () => {
-            if (cookiesFile) fs.unlink(cookiesFile, () => {}); // clean up
-
-            let title = "download";
+            let info;
             try {
-                const info = JSON.parse(json);
-                title = info.title || title;
+                info = JSON.parse(json);
             } catch (e) {
-                console.warn("Metadata parse failed, fallback filename used.");
+                return res.status(500).send("Metadata parse error");
             }
 
-            const fileExtensions = mfe.getFileExtensions(mimeType, true);
-            const extension = fileExtensions[0] || ".mp4";
-            const filename = contentDisposition(title + extension);
+            const format = info.formats
+                .filter(f => f.vcodec === "none" && f.acodec !== "none")
+                .sort((a, b) => (b.abr || 0) - (a.abr || 0))[0];
+
+            if (!format) return res.status(404).send("No suitable audio format found");
+
+            const mimeType = format.mime_type?.split(";")[0] || "application/octet-stream";
+            const extension = mfe.getFileExtensions(mimeType, true)[0] || ".mp3";
+            const filename = contentDisposition(`${info.title}${extension}`);
+            const filesize = format.filesize || format.filesize_approx;
 
             res.setHeader("Content-Disposition", filename);
             res.setHeader("Content-Type", mimeType);
-            if (!isNaN(totalSize)) res.setHeader("Content-Length", totalSize);
+            if (filesize) res.setHeader("Content-Length", filesize);
             res.setHeader("Accept-Ranges", "bytes");
 
-            const ytdlpArgs = ["-f", format.itag.toString(), "-o", "-", "--no-part", url];
-            if (cookiesFile) ytdlpArgs.unshift("--cookies", cookiesFile);
+            const dl = spawn(ytDlpPath, [
+                "--cookies", cookiesFilePath,
+                "-f", format.format_id,
+                "-o", "-",
+                "--no-part",
+                url,
+            ]);
 
-            const ytdlp = spawn(ytDlpPath, ytdlpArgs);
-
-            ytdlp.stdout.pipe(res);
-
-            ytdlp.stderr.on("data", data => console.error("yt-dlp stderr:", data.toString()));
-            ytdlp.on("error", err => {
+            dl.stdout.pipe(res);
+            dl.stderr.on("data", data => console.error("yt-dlp stderr:", data.toString()));
+            dl.on("error", err => {
                 console.error("yt-dlp error:", err);
                 if (!res.headersSent) res.status(500).send("Download failed");
             });
-            ytdlp.on("close", code => {
-                if (code !== 0) {
-                    console.error("yt-dlp exited with code", code);
-                }
+            dl.on("close", code => {
+                if (code !== 0) console.error("yt-dlp exited with code", code);
             });
         });
     } catch (err) {
         console.error("Unexpected error:", err);
-        if (cookiesFile) fs.unlink(cookiesFile, () => {});
         res.status(500).send("Server error");
     }
 });
 
 module.exports = router;
+
