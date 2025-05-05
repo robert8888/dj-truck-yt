@@ -12,16 +12,9 @@ const getCookiesJson = () => {
 }
 
 const getFormat = async id => {
-    const cookies = JSON.parse(getCookiesJson());
+    const agent = ytdl.createAgent(JSON.parse(getCookiesJson()));
 
-    const info = await ytdl.getInfo(id, {
-        cookies,
-        requestOptions: {
-            headers: {
-                'User-Agent': 'Mozilla/5.0',
-            }
-        }
-    });
+    const info = await ytdl.getInfo(id, {agent});
     const format = ytdl.chooseFormat(info.formats, {
         quality: 'highestaudio',
         filter: 'audioonly'
