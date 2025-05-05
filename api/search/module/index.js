@@ -49,7 +49,6 @@ async function get(queryString, maxResults = null) {
 
 async function call(url) {
     try {
-        console.log(url)
         let response = await fetch(url);
         return await response.json();
     } catch (error) {
